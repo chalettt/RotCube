@@ -6,12 +6,12 @@
 /**
  * @brief Window width.
  */
-#define WIDTH 500
+#define WIDTH 1000
 
 /**
  * @brief Window height.
  */
-#define HEIGHT 500
+#define HEIGHT 1000
 
 /**
  * @brief White color.
@@ -74,6 +74,13 @@ SDL_Window *create_window(int w, int h);
  * @return The created renderer.
  */
 SDL_Renderer *create_renderer(SDL_Window *window);
+
+/**
+ * @brief Creates an SDL texture.
+ *
+ * @param renderer The renderer to draw on.
+ * @return The created texture.
+ */
 SDL_Texture *create_texture(SDL_Renderer *renderer);
 
 #endif /* ! SDL_MANAGER_H */

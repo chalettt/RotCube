@@ -6,10 +6,31 @@
 
 #include "geometry/mesh.h"
 #include "geometry/point.h"
+#include "geometry/vector.h"
 #include "rendering/camera.h"
 #include "rendering/sdl_manager.h"
 #include "rendering/visual.h"
 #include "utils/debug.h"
+
+void draw_normal(SDL_Renderer *r, Point *pos, Point *normal)
+{
+    SDL_SetRenderDrawColor(r, 255, 0, 0, 255);
+    Point projection_p = project(pos);
+    Point *end = create_point(pos->x, pos->y, pos->z);
+    add_point(end, normal);
+    Point projection_n = project(end);
+    free(end);
+
+    if (projection_n.z < 0.01 || projection_p.z < 0.01)
+        return;
+
+    double dot = dot_product(normal, camera->look_ahead);
+    if (dot < 0)
+        return;
+
+    SDL_RenderDrawLine(r, projection_p.x, projection_p.y, projection_n.x,
+                       projection_n.y);
+}
 
 Point *handle_args(int argc, char **argv, double *scale)
 {
@@ -152,6 +173,18 @@ int main(int argc, char **argv)
 
         draw_mesh(texture, mesh);
         SDL_RenderCopy(renderer, texture, NULL, NULL);
+
+#ifdef DEBUG
+        for (size_t i = 0; mesh->triangles[i]; i++)
+        {
+            Triangle *triangle = mesh->triangles[i];
+            for (size_t j = 0; j < 3; j++)
+            {
+                Point *pos = mesh->vertices[triangle->indices[j]]->position;
+                draw_normal(renderer, pos, triangle->vertex_normals[j]);
+            }
+        }
+#endif
         SDL_RenderPresent(renderer);
 
         // 60 frames a second.

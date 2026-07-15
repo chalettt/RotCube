@@ -29,6 +29,14 @@ Point vector_cross(Point *a, Point *b);
  */
 double dot_product(Point *a, Point *b);
 
+/**
+ * @brief Computes the determinant of three vectors.
+ *
+ * @param a The first vector.
+ * @param b The second vector.
+ * @param p The third vector.
+ * @return The determinant.
+ */
 double determinant(Point *a, Point *b, Point *p);
 
 #endif /* VECTOR_H */

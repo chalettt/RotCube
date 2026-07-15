@@ -1,6 +1,6 @@
 CC = gcc
 CPPFLAGS = -I./include/
-CFLAGS = -pedantic -Werror -Wall -Wextra -Wvla
+CFLAGS = -pedantic -Wall -Wextra -Wvla -Werror
 LDFLAGS = -lm -lSDL2
 
 SRC_DIR = src
@@ -22,9 +22,9 @@ $(TARGET): $(OBJ)
 doc:
 	doxygen Doxyfile
 
-debug: CFLAGS=-g -fsanitize=address
+debug: CFLAGS=-DDEBUG -g -fsanitize=address
 debug: LDFLAGS+=-g -fsanitize=address
-debug: all
+debug: all 
 
 clean:
 	$(RM) -r $(TARGET) $(OBJ)

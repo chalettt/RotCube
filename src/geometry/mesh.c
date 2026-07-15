@@ -177,12 +177,11 @@ Mesh *load_mesh(char *path, Point *origin)
             size_t v_idx = faces[i][j][0] - 1;
             size_t n_idx = faces[i][j][2] - 1;
             Vertex *vertex = mesh->vertices[v_idx];
-            if (!vertex->normal)
-            {
-                Point *normal = create_point(
-                    normals[n_idx][0], normals[n_idx][1], normals[n_idx][2]);
-                vertex->normal = normal;
-            }
+            if (vertex->normal)
+                free(vertex->normal);
+            Point *normal = create_point(normals[n_idx][0], normals[n_idx][1],
+                                         normals[n_idx][2]);
+            vertex->normal = normal;
         }
         size_t **triangles = triangulize(faces[i]);
         for (size_t j = 0; triangles[j]; j++)
@@ -194,13 +193,18 @@ Mesh *load_mesh(char *path, Point *origin)
                     mesh->triangles, (triangle_count + 1) * sizeof(Triangle *));
             }
             mesh->triangles[triangle_index++] = create_triangle(triangles[j]);
+            for (size_t k = 0; k < 3; k++)
+            {
+                mesh->triangles[triangle_index - 1]->vertex_normals[k] =
+                    dup_point(mesh->vertices[triangles[j][k]]->normal);
+            }
             free(triangles[j]);
             mesh->triangles[triangle_index] = 0;
         }
         free(triangles);
     }
 
-    mesh->triangle_count = triangle_count;
+    mesh->triangle_count = triangle_index + 1;
 
     for (size_t i = 0; faces[i]; i++)
     {
@@ -222,41 +226,28 @@ Mesh *load_mesh(char *path, Point *origin)
 
 void rotate_mesh(Mesh *mesh, double alpha, Direction direction)
 {
+    Point world_origin = { 0, 0, 0 };
     for (size_t i = 0; mesh->vertices[i]; i++)
     {
         Point *point = mesh->vertices[i]->position;
-        Point *normal = mesh->vertices[i]->normal;
-        Point world_origin = { 0, 0, 0 };
         switch (direction)
         {
         case LEFT:
-            if (normal)
-                rotate_point_y(normal, &world_origin, alpha);
             rotate_point_y(point, mesh->origin, alpha);
             break;
         case RIGHT:
-            if (normal)
-                rotate_point_y(normal, &world_origin, -alpha);
             rotate_point_y(point, mesh->origin, -alpha);
             break;
         case FRONT:
-            if (normal)
-                rotate_point_x(normal, &world_origin, alpha);
             rotate_point_x(point, mesh->origin, alpha);
             break;
         case BACK:
-            if (normal)
-                rotate_point_x(normal, &world_origin, -alpha);
             rotate_point_x(point, mesh->origin, -alpha);
             break;
         case UP:
-            if (normal)
-                rotate_point_z(normal, &world_origin, alpha);
             rotate_point_z(point, mesh->origin, alpha);
             break;
         case DOWN:
-            if (normal)
-                rotate_point_z(normal, &world_origin, -alpha);
             rotate_point_z(point, mesh->origin, -alpha);
             break;
         }
@@ -266,6 +257,31 @@ void rotate_mesh(Mesh *mesh, double alpha, Direction direction)
         Triangle *triangle = mesh->triangles[i];
         free(triangle->normal);
         triangle->normal = get_triangle_normal(triangle);
+        for (size_t i = 0; i < 3; i++)
+        {
+            Point *normal = triangle->vertex_normals[i];
+            switch (direction)
+            {
+            case LEFT:
+                rotate_point_y(normal, &world_origin, alpha);
+                break;
+            case RIGHT:
+                rotate_point_y(normal, &world_origin, -alpha);
+                break;
+            case FRONT:
+                rotate_point_x(normal, &world_origin, alpha);
+                break;
+            case BACK:
+                rotate_point_x(normal, &world_origin, -alpha);
+                break;
+            case UP:
+                rotate_point_z(normal, &world_origin, alpha);
+                break;
+            case DOWN:
+                rotate_point_z(normal, &world_origin, -alpha);
+                break;
+            }
+        }
     }
 }
 

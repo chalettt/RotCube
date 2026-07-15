@@ -11,6 +11,7 @@
 typedef struct triangle
 {
     size_t indices[3];
+    Point **vertex_normals;
     Point *normal;
 } Triangle;
 

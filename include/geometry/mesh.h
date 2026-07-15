@@ -48,6 +48,13 @@ void destroy_mesh(Mesh *mesh);
  * @param alpha The angle to rotate the mesh by.
  */
 void rotate_mesh(Mesh *mesh, double alpha, Direction direction);
+
+/**
+ * @brief Rotates a mesh.
+ *
+ * @param mesh The mesh to scale.
+ * @param alpha The scalar to scale the mesh by.
+ */
 void scale_mesh(Mesh *mesh, double scale);
 
 #endif /* mesh_H*/

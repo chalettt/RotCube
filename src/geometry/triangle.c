@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include "geometry/mesh.h"
+#include "geometry/point.h"
 #include "geometry/vector.h"
 
 Point *get_triangle_normal(Triangle *triangle)
@@ -25,6 +26,7 @@ Triangle *create_triangle(size_t indices[3])
     for (size_t i = 0; i < 3; i++)
         triangle->indices[i] = indices[i];
     triangle->normal = get_triangle_normal(triangle);
+    triangle->vertex_normals = calloc(3, sizeof(Point *));
 
     return triangle;
 }
@@ -34,6 +36,9 @@ void destroy_triangle(Triangle *triangle)
     if (!triangle)
         return;
 
+    for (size_t i = 0; i < 3; i++)
+        free(triangle->vertex_normals[i]);
+    free(triangle->vertex_normals);
     free(triangle->normal);
     free(triangle);
 }
