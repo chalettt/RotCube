@@ -42,7 +42,7 @@ SDL2 needs to be installed for this project to be built.
 * Pan mesh: mouse hold
 * Up/Down: <kbd>Space</kbd> <kbd>Control</kbd> 
 * Go faster: <kbd>Shift</kbd>
-* Font/Left/Rear/Right: <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd>
+* Front/Left/Rear/Right: <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd>
 
 ## Documentation
 Each header file contains a doxygen documentation, you can run the following command to generate the full documentation (which will generate in /docs):
