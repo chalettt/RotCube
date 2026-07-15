@@ -27,4 +27,4 @@ debug: LDFLAGS+=-g -fsanitize=address
 debug: all 
 
 clean:
-	$(RM) -r $(TARGET) $(OBJ)
+	$(RM) $(TARGET) $(OBJ)
